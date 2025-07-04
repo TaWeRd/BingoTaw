@@ -1,0 +1,86 @@
+Botón “Siguiente bolita”
+Dispara sorteo aleatorio de número único no repetido.
+Guarda el número en la base de datos bajo el campo drawnNumbers.
+Emite evento en tiempo real a todos los jugadores conectados.
+Ejecuta voz TTS chilena seleccionada repitiendo dos veces el número sorteado.
+Actualiza la interfaz del master y jugadores.
+
+Botón “Leer descripción del patrón”
+TTS anuncia: “Señoras y señores, estamos jugando la modalidad [nombre] — [descripción]. Completen esta línea.”
+Solo visible para el Master.
+Lectura depende de modalidad configurada.
+
+Botón “Pausar / Reanudar”
+Al pausar, detiene el sorteo automático.
+Al reanudar, continúa desde último estado.
+Control visible solo para el Master.
+
+Botón “Finalizar juego”
+Cambia el estado de la sesión a finalizado.
+Desactiva todos los controles activos.
+Dispara proceso de guardado de estadísticas.
+Previene nuevos bingos.
+
+Evento “Jugador hace clic en ¡BINGO!”
+Envía solicitud al backend con su uuid.
+Backend compara el cartón del jugador contra drawnNumbers.
+Si es válido, pausa juego, guarda el ganador, reproduce mensaje TTS: “Tenemos bingo ganador por [nombre del jugador].”
+Si es parcial (binguito), reproduce mensaje: “Tenemos binguito ganado por [nombre del jugador]. Continuamos…”
+
+Vista de jugador /card/[uuid]
+Carga cartón asignado desde MongoDB.
+Escucha eventos de nuevos números y los marca automáticamente.
+Muestra botón “¡BINGO!” visible solo mientras el juego esté activo.
+Estado visual de casillas (marcadas / no marcadas) actualizado en tiempo real.
+
+Asignación de cartón
+Previo al inicio del juego, jugadores ven lista de cartones disponibles.
+Ingresan nombre y seleccionan un cartón disponible.
+Envía POST al backend con datos { sessionId, playerName, uuid }.
+Asocia el cartón al jugador en base de datos.
+
+Modalidad personalizada de juego
+Permite al master definir patrón propio marcando celdas en grilla visual.
+Asocia un nombre a la modalidad personalizada.
+Genera una imagen preview del patrón para mostrar a los jugadores.
+Guarda el patrón en Mongo junto con sesión.
+
+Velocidad de sorteo
+Selector de velocidad (rápido / lento) disponible para el Master.
+Controla intervalo del sorteo automático si está habilitado.
+Modificable en tiempo real durante el juego.
+
+Modal “La Mesa Pide”
+Campo de texto donde el Master ingresa palabra o frase.
+Botón que al hacer clic activa TTS: “La mesa pide… [frase]”.
+Jugadores deben responder desde su dispositivo.
+Backend valida la primera respuesta correcta.
+Muestra mensaje visual y audible con el ganador del reto.
+
+Historial de partidas
+Al finalizar una sesión se guarda: nombre del patrón, drawnNumbers, duración, ganador, total de bolas usadas.
+En el Dashboard, sección de historial muestra lista de sesiones finalizadas.
+Cada sesión permite ver replay bola por bola y estadísticas individuales.
+
+Estadísticas generales
+Panel muestra métricas agregadas:
+Patrones más usados.
+Duración promedio de partidas.
+Eficiencia en sorteos (número de bolas vs tiempo).
+Frecuencia de bingos por modalidad.
+
+Página 404
+Ruta fallback para rutas inexistentes.
+Mensaje claro y botón para volver al dashboard.
+
+Selección de voz
+Master puede elegir entre voces chilenas: “Lorenzo” (masculino), “Catalina” (femenino).
+Configuración en el wizard previo a iniciar partida.
+Voz usada tanto en sorteos como en mensajes del juego.
+
+Configuración avanzada de voz
+Permite ajustar:
+Velocidad de lectura (lento / normal / rápido).
+Tono (grave / medio / agudo).
+Estilo (entusiasta / formal).
+Aplicable por modalidad y guardado en configuración de sesión.
